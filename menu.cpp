@@ -1,5 +1,6 @@
 #include "Derivador.h"
 #include "ModuloRealimentado.h"
+#include "Integrador.h"
 #include <cmath>
 
 double *obterSequencia(double *sequencia);
@@ -74,7 +75,7 @@ void processarOpcao1()
   cout << "Qual o ganho do acelerador?" << endl
        << "g = ";
   cin >> ganho;
-  ModuloRealimentado *modulo = new ModuloRealimentado(ganho);
+  ModuloRealimentado *modulo = new ModuloRealimentado();
   // impressao && processar do sinal
   (modulo->processar(sinal))->imprimir("Velocidade do Carro");
 
