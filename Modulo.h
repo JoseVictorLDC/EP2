@@ -4,15 +4,17 @@
 #include "CircuitoSISO.h"
 #include <list>
 
-class Modulo
+class Modulo : public CircuitoSISO
 {
 private:
+    list<CircuitoSISO*>* listaCircuitos;
 
 public:
     Modulo();
-    virtual ~Modulo();
+    virtual ~Modulo() = 0;
     void adicionar(CircuitoSISO* circ);
     list<CircuitoSISO*>* getCircuitos();
+    void imprimir();
 
 };
 

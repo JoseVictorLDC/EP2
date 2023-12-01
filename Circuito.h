@@ -13,7 +13,7 @@ public:
     Circuito();
     virtual ~Circuito() = 0;
     int getID();
-    void imprimir();
+    virtual void imprimir();
     static int getUltimoID();
 };
 
