@@ -1,25 +1,33 @@
-#include "Derivador.h"
-#include "ModuloRealimentado.h"
-#include "Integrador.h"
+#include "PersistenciaDeModulo.h"
+
+#include <fstream>
+#include <stdexcept>
 #include <cmath>
+#include <iostream>
+using namespace std;
 
 double *obterSequencia(double *sequencia);
 void processarOpcao1();
 void processarOpcao2();
+void salvarArquivo(Modulo *modulo);
+void aquisicaoDeOperacao(CircuitoSISO *circuito, Modulo *modulo);
+void impressao(Modulo *modulo, Sinal *sinal);
+void aquisicaoEimpressao(CircuitoSISO *circuito, Modulo *modulo, Sinal *sinal);
 
 void menu()
 {
   int opcao;
-  cout << "\tSimulink em C++" << endl
-       << "Qual simulacao voce gostaria de fazer?" << endl
-       << "1) Piloto Automatico" << endl
-       << "2) Sua propria sequencia de operacoes" << endl
+  cout << "\tSimulink em C++" << '\n'
+       << "Qual simulacao voce gostaria de fazer?" << '\n'
+       << "1) Circuito advindo de arquivo" << '\n'
+       << "2) Sua propria sequencia de operacoes" << '\n'
        << "Escolha: ";
   cin >> opcao;
+  cout << '\n';
 
   if (opcao == 1)
     processarOpcao1();
-  
+
   else if (opcao == 2)
     processarOpcao2();
 }
@@ -27,12 +35,13 @@ void menu()
 double *obterSequencia(double *sequencia)
 {
   int opcao;
-  cout << "Qual sinal voce gostaria de utilizar como entrada da sua simulacao?" << endl
-       << "1) 5+3*cos(n*pi/8)" << endl
-       << "2) constante" << endl
-       << "3) rampa" << endl
+  cout << "Qual sinal voce gostaria de utilizar como entrada da sua simulacao" << '\n'
+       << "1) 5+3*cos(n*pi/8)" << '\n'
+       << "2) constante" << '\n'
+       << "3) rampa" << '\n'
        << "Escolha: ";
   cin >> opcao;
+  cout << '\n';
   if (opcao == 1)
   {
     for (int i = 0; i < 60; i++)
@@ -43,9 +52,10 @@ double *obterSequencia(double *sequencia)
   else if (opcao == 2)
   {
     double C;
-    cout << "Qual o valor dessa constante?" << endl
+    cout << "Qual o valor dessa constante?" << '\n'
          << "C = ";
     cin >> C;
+    cout << '\n';
     for (int i = 0; i < 60; i++)
     {
       sequencia[i] = C;
@@ -54,9 +64,10 @@ double *obterSequencia(double *sequencia)
   else if (opcao == 3)
   {
     double a;
-    cout << "Qual a inclinacao dessa rampa?" << endl
+    cout << "Qual a inclinacao dessa rampa?" << '\n'
          << "a = ";
     cin >> a;
+    cout << '\n';
     for (int i = 0; i < 60; i++)
     {
       sequencia[i] = i * a;
@@ -70,85 +81,160 @@ void processarOpcao1()
   // criacao dos objetos necessarios//
   double *sequencia = new double[60];
   Sinal *sinal = new Sinal(obterSequencia(sequencia), 60);
-  double ganho;
+  Modulo *modulo = nullptr;
 
-  cout << "Qual o ganho do acelerador?" << endl
-       << "g = ";
-  cin >> ganho;
-  ModuloRealimentado *modulo = new ModuloRealimentado();
-  // impressao && processar do sinal
-  (modulo->processar(sinal))->imprimir("Velocidade do Carro");
+  string nomeDoarquivo;
+  cout << "Qual o nome do aqruivo a ser lido?" << '\n'
+       << "Nome: ";
+  cin >> nomeDoarquivo;
+  cout << '\n';
+
+  try
+  {
+    PersistenciaDeModulo *persistencia = new PersistenciaDeModulo(nomeDoarquivo);
+    modulo = persistencia->lerDeArquivo();
+    impressao(modulo, sinal);
+    delete persistencia;
+  }
+  catch (logic_error *e)
+  {
+    cout << e->what() << '\n';
+    delete e;
+  }
 
   // delete nos objetos criados
-  delete modulo;
+  if (modulo != nullptr)
+    delete modulo;
   delete sinal;
   delete[] sequencia;
 }
 
+
 void processarOpcao2()
 {
-  // inicializando o sinal
   double *sequencia = new double[60];
   Sinal *sinal = new Sinal(obterSequencia(sequencia), 60);
-  // inicializando os operadores necessarios
-  Amplificador *amplificador = new Amplificador(-1); // amplificador foi inicializado com ganho = -1 e utilizaremos o setGanho()
-  Somador *somador = new Somador();
-  Derivador *derivador = new Derivador();
-  Integrador *integrador = new Integrador();
+  Modulo *modulo = nullptr;
+  CircuitoSISO *circuito = nullptr;
 
-  int loop = 1, opcao;
+  cout << "Qual estrutura de operações voce deseja ter como base" << '\n'
+       << "1) Operacoes em serie nao realimentadas" << '\n'
+       << "2) Operacoes em paralelo nao realimentadas" << '\n'
+       << "3) Operacoes em serie realimentadas" << '\n'
+       << "Escolha: ";
+  int opcao;
+  cin >> opcao;
+  cout << '\n';
+
+  if (opcao == 1)
+    modulo = new ModuloEmSerie();
+
+  else if (opcao == 2)
+    modulo = new ModuloEmParalelo();
+
+  else if (opcao == 3)
+    modulo = new ModuloRealimentado();
+
+  aquisicaoEimpressao(circuito, modulo, sinal);
+
+  // delete nos objetos criados com "new"
+  if (modulo != nullptr)
+    delete modulo;
+  if (circuito != nullptr)
+    delete circuito;
+  delete sinal;
+  delete[] sequencia;
+}
+
+void salvarArquivo(Modulo *modulo)
+{
+  cout << "Voce gostaria de salvar o resultado em um arquivo?" << '\n'
+       << "1) Sim" << '\n'
+       << "2) Nao" << '\n'
+       << "Escolha: ";
+  int opcao;
+  cin >> opcao;
+  cout << '\n';
+  if (opcao == 1)
+  {
+    string nomeDoArquivo;
+    cout << "Qual o nome do arquivo a ser escrito?" << '\n'
+         << "Nome: ";
+    cin >> nomeDoArquivo;
+    cout << '\n';
+    PersistenciaDeModulo *persistencia = new PersistenciaDeModulo(nomeDoArquivo);
+    persistencia->salvarEmArquivo(modulo);
+    delete persistencia;
+  }
+}
+
+void aquisicaoDeOperacao(CircuitoSISO *circuito, Modulo *modulo)
+{
+  int opcao;
+  int loop = 1;
   while (loop == 1)
   {
-    cout << "Qual operacao voce gostaria de fazer?" << endl
-         << "1) Amplificar" << endl
-         << "2) Somar" << endl
-         << "3) Derivar" << endl
-         << "4) Integrar" << endl
+    cout << "Qual operacao voce gostaria de fazer?" << '\n'
+         << "1) Amplificar" << '\n'
+         << "2) Derivar" << '\n'
+         << "3) Integrar" << '\n'
          << "Escolha: ";
     cin >> opcao;
+    cout << '\n';
     // opcao para cada caso acima
     if (opcao == 1)
     {
       double ganho;
-      cout << "Qual o ganho dessa amplificacao?" << endl
+      cout << "Qual o ganho dessa amplificacao?" << '\n'
            << "g = ";
       cin >> ganho;
-      amplificador->setGanho(ganho);
-      
-      sinal = (amplificador)->processar(sinal);
+      cout << '\n';
+      circuito = new Amplificador(ganho);
+      modulo->adicionar(circuito);
     }
     else if (opcao == 2)
     {
-      cout << "Informe mais um sinal para ser somado." << endl;
-      double *sequenciaAux = new double[60];
-      Sinal *sinalAux = new Sinal(obterSequencia(sequenciaAux), 60);
-      sinal = (somador)->processar(sinal, sinalAux);
-      delete[] sequenciaAux;
-      delete sinalAux;
-    }
-    else if (opcao == 3)
-    {
-      sinal = (derivador)->processar(sinal);
-    }
-    else if (opcao == 4)
-    {
-      sinal = (integrador)->processar(sinal);
+      circuito = new Derivador();
+      modulo->adicionar(circuito);
     }
 
-    cout << "O que voce quer fazer agora?" << endl
-         << "1) Realizar mais uma operacao no resultado" << endl
-         << "2) Imprimir o resultado para terminar" << endl
+    else if (opcao == 3)
+    {
+      circuito = new Integrador();
+      modulo->adicionar(circuito);
+    }
+
+    cout << "O que voce quer fazer agora?" << '\n'
+         << "1) Realizar mais uma operacao no resultado" << '\n'
+         << "2) Imprimir o resultado" << '\n'
          << "Escolha: ";
     // Aqui podemos quebrar o loop
     cin >> loop;
+    cout << '\n';
   }
-  // impressao do sinal processado
-  sinal->imprimir("Resultado Final");
-  // delete nos objetos criados com "new"
-  delete[] sequencia;
-  delete sinal;
-  delete amplificador;
-  delete somador;
-  delete derivador;
-  delete integrador;
 }
+
+void impressao(Modulo *modulo, Sinal *sinal)
+{
+  Sinal *saida = nullptr;
+  try
+  {
+    saida = modulo->processar(sinal);
+    saida->imprimir("Resultado Final");
+    cout << '\n';
+    salvarArquivo(modulo);
+    delete saida;
+  }
+  catch (logic_error *e)
+  {
+    cout << e->what() << '\n';
+    delete e;
+  }
+}
+
+void aquisicaoEimpressao(CircuitoSISO *circuito, Modulo *modulo, Sinal *sinal)
+{
+  aquisicaoDeOperacao(circuito, modulo);
+  impressao(modulo, sinal);
+}
+
