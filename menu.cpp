@@ -1,4 +1,10 @@
 #include "PersistenciaDeModulo.h"
+#include "ModuloEmSerie.h"
+#include "ModuloEmParalelo.h"
+#include "ModuloRealimentado.h"
+#include "Amplificador.h"
+#include "Derivador.h"
+#include "Integrador.h"
 
 #include <fstream>
 #include <stdexcept>

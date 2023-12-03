@@ -28,7 +28,7 @@ list<CircuitoSISO *> *Modulo::getCircuitos()
 
 void Modulo::imprimir()
 {
-    cout << "Modulo com ID " << id << " e :" << endl;
+    cout << "Modulo com ID " << IDespecifico << " e :" << endl;
 
     for (list<CircuitoSISO *>::iterator i = circuitos->begin(); i != circuitos->end(); i++)
     {

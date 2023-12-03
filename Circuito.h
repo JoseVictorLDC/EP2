@@ -5,7 +5,7 @@
 
 class Circuito
 {
-private:
+protected:
     static int IDgeral;
     int IDespecifico;
 
