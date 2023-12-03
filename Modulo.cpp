@@ -1,27 +1,35 @@
 #include "Modulo.h"
 
-Modulo::Modulo() {
-    this->listaCircuitos = new list<CircuitoSISO*>();
+#include <iostream>
+using namespace std;
+
+Modulo::Modulo() : CircuitoSISO()
+{
+    this->circuitos = new list<CircuitoSISO *>();
 }
 
-Modulo::~Modulo() {
-    for (list<CircuitoSISO*>::iterator i = listaCircuitos->begin(); i != listaCircuitos->end(); i++) {
-    delete (*i);
+Modulo::~Modulo()
+{
+    delete circuitos;
+}
+
+void Modulo::adicionar(CircuitoSISO *circ)
+{
+    circuitos->push_back(circ);
+}
+
+list<CircuitoSISO *> *Modulo::getCircuitos()
+{
+    return circuitos;
+}
+
+void Modulo::imprimir()
+{
+    cout << "Modulo com ID " << id << " e :" << endl;
+
+    for (list<CircuitoSISO *>::iterator i = circuitos->begin(); i != circuitos->end(); i++)
+    {
+        (*i)->imprimir();
     }
-    delete listaCircuitos;
+    cout << "--" << endl; 
 }
-
-void Modulo::adicionar(CircuitoSISO* circ) {
-    listaCircuitos->push_back(circ);
-}
-
-list<CircuitoSISO*>* Modulo::getCircuitos() {
-    return listaCircuitos;
-}
-
-void Modulo::imprimir() {
-    cout << "Modulo com ID " << getID() << " e:" << endl;
-    for (list<CircuitoSISO*>::iterator i = listaCircuitos->begin(); i != listaCircuitos->end(); i++) {
-    cout << "Circuito com ID " << getID() << endl;
-    }
-} 
