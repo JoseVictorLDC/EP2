@@ -3,15 +3,15 @@
 
 #include "Modulo.h"
 
-class ModuloEmSerie : public Modulo
+class ModuloEmSerie : public Modulo // herança da classe Modulo
 {
 private:
+    Sinal *saida;
 
 public:
     ModuloEmSerie();
     virtual ~ModuloEmSerie();
-    virtual Sinal* processar(Sinal* sinalIN);
-    
+    Sinal *processar(Sinal *sinalIN); // redifinição do método processar da superclasse
 };
 
 #endif

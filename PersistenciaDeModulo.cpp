@@ -1,84 +1,103 @@
 #include "PersistenciaDeModulo.h"
-#include "Modulo.h"
-#include "CircuitoSISO.h"
-#include "Amplificador.h"
-#include "Integrador.h"
-#include "Derivador.h"
-#include "ModuloEmSerie.h"
-#include "ModuloEmParalelo.h"
-#include "ModuloRealimentado.h"
 
 #include <fstream>
-#include <iostream>
-#include <stdexcept>
-#include <string>
-using namespace std;
 
-PersistenciaDeModulo::PersistenciaDeModulo(string nomeDoArquivo) {
-    this->nomeDoArquivo = nomeDoArquivo;
+void salvarEmArquivoRecurssivo(Modulo *mod, ofstream &arquivo) // funcao auxiliar para salvar em arquivo
+{
+    // sera utilizado o cast dinamico para saber qual o tipo do modulo ou circuito
+    if (dynamic_cast<ModuloEmSerie *>(mod))
+        arquivo << "S" << '\n';
+
+    else if (dynamic_cast<ModuloEmParalelo *>(mod))
+        arquivo << "P" << '\n';
+
+    else if (dynamic_cast<ModuloRealimentado *>(mod))
+        arquivo << "R" << '\n';
+
+    for (list<CircuitoSISO *>::iterator i = (mod->getCircuitos())->begin(); i != (mod->getCircuitos())->end(); i++)
+    {
+        if (dynamic_cast<Integrador *>(*i))
+            arquivo << "I" << '\n';
+
+        else if (dynamic_cast<Derivador *>(*i))
+            arquivo << "D" << '\n';
+
+        else if (dynamic_cast<Amplificador *>(*i))
+            arquivo << "A " << dynamic_cast<Amplificador *>(*i)->getGanho() << '\n';
+
+        else if (dynamic_cast<Modulo *>(*i))
+            salvarEmArquivoRecurssivo(dynamic_cast<Modulo *>(*i), arquivo);
+    }
+    arquivo << "f" << '\n'; // marca o fim da recursao
 }
 
-PersistenciaDeModulo::~PersistenciaDeModulo() {
+Modulo *lerDeArquivoRecurssivo(ifstream &arquivo) // funcao auxiliar para ler de arquivo
+{
+    Modulo *mod = nullptr;
+    string tipo;
+    double ganho;
+
+    arquivo >> tipo;
+    if (tipo == "S")
+        mod = new ModuloEmSerie();
+    else if (tipo == "P")
+        mod = new ModuloEmParalelo();
+    else if (tipo == "R")
+        mod = new ModuloRealimentado();
+
+    arquivo >> tipo;
+    while (arquivo)
+    {
+        if (tipo == "I")
+            mod->adicionar(new Integrador());
+
+        else if (tipo == "D")
+            mod->adicionar(new Derivador());
+
+        else if (tipo == "A")
+        {
+            arquivo >> ganho;
+            mod->adicionar(new Amplificador(ganho));
+        }
+
+        else if (tipo == "S" || tipo == "P" || tipo == "R") // se for um modulo
+        {
+            arquivo.unget();                                 // retorna o tipo para o arquivo para que a funcao lerDeArquivoRecurssivo possa ler novamente
+            mod->adicionar(lerDeArquivoRecurssivo(arquivo)); // le o modulo de forma recurssiva e adiciona na lista
+        }
+        else if (tipo == "f")
+            return mod; // marca o fim da recursao
+
+        arquivo >> tipo;
+    }
+    throw new logic_error("formatacao incorreta do arquivo"); // se o arquivo nao termina com "f"
 }
 
-void PersistenciaDeModulo::salvarEmArquivo(Modulo* mod) {
-    ofstream ostream;
-    ostream.open(nomeDoArquivo, ios_base::app);
-    
-
-    for(list<CircuitoSISO*>::iterator i = (mod->getCircuitos())->begin(); i != (mod->getCircuitos())->end(); i++) {
-        ostream << testeDeClasse(*i) << endl;
-    }
-
-    ostream << "f" << endl;
-
-    ostream.close();
-
+PersistenciaDeModulo::PersistenciaDeModulo(string nomeDoArquivo) : nomeDoArquivo(nomeDoArquivo)
+{ // construtor recebe o nome do arquivo
 }
 
-Modulo* PersistenciaDeModulo::lerDeArquivo() {
-    ifstream istream;
-    string X;
-    istream.open(nomeDoArquivo, ios_base::in);
-
-    if(istream.fail()) {
-        throw invalid_argument("Erro de leitura");
-    }
-    while (istream) {
-        istream >> X;
-        cout << X << endl;
-    }
-
-    if (!istream.eof()) {
-        throw logic_error("Arquivo em formatação inesperada");
-    }
-    istream.close(); 
+PersistenciaDeModulo::~PersistenciaDeModulo()
+{ // destrutor nao faz nada de especial
 }
 
-string testeDeClasse(CircuitoSISO *Circuito) {
-    ModuloEmSerie moduloSerie;
-    ModuloEmParalelo moduloParalelo;
-    ModuloRealimentado moduloRealimentado;
-    Amplificador amplificador(0);
-    Integrador integrador;
-    Derivador derivador;
+void PersistenciaDeModulo::salvarEmArquivo(Modulo *mod)
+{
+    ofstream arquivo;
+    arquivo.open(nomeDoArquivo);
+    salvarEmArquivoRecurssivo(mod, arquivo);
+    arquivo.close();
+}
 
-    if (CircuitoSISO *Circuito = dynamic_cast<ModuloEmSerie*>(moduloSerie) == true) {
-        return "S";
-    }
-    if (CircuitoSISO *Circuito = dynamic_cast<ModuloEmParalelo*>(moduloParalelo) == true) {
-        return "P";
-    }
-    if (CircuitoSISO *Circuito = dynamic_cast<ModuloRealimentado*>(moduloRealimentado) == true) {
-        return "R";
-    }
-    if (CircuitoSISO *Circuito = dynamic_cast<Amplificador*>(amplificador) == true) {
-        return "A" << Circuito->getGanho();
-    }
-    if (CircuitoSISO *Circuito = dynamic_cast<Integrador*>(integrador) == true) {
-        return "I";
-    }
-    if (CircuitoSISO *Circuito = dynamic_cast<Derivador*>(derivador) == true) {
-        return "D";
-    }
+Modulo *PersistenciaDeModulo::lerDeArquivo()
+{
+    ifstream arquivo;
+    arquivo.open(nomeDoArquivo);
+    if (arquivo.fail()) // se o arquivo nao existe
+        throw new invalid_argument("arquivo nao encontrado");
+    Modulo *mod = lerDeArquivoRecurssivo(arquivo);
+    if (!arquivo.eof()) // se o arquivo nao termina com "f"
+        throw new logic_error("formatacao incorreta do arquivo");
+    arquivo.close();
+    return mod;
 }
