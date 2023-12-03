@@ -90,7 +90,7 @@ void processarOpcao1()
   Modulo *modulo = nullptr;
 
   string nomeDoarquivo;
-  cout << "Qual o nome do aqruivo a ser lido?" << '\n'
+  cout << "Qual o nome do arquivo a ser lido?" << '\n'
        << "Nome: ";
   cin >> nomeDoarquivo;
   cout << '\n';
