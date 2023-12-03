@@ -2,6 +2,10 @@
 #define MODULOREALIMENTADO_H
 
 #include "ModuloEmSerie.h"
+#include "CircuitoSISO.h"
+#include "Sinal.h"
+
+#include <list>
 
 class ModuloRealimentado : public Modulo // herança da classe Modulo
 {

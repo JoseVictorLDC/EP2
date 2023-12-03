@@ -1,6 +1,8 @@
 #include "ModuloEmSerie.h"
+#include "Sinal.h"
 
 #include <stdexcept>
+#include <list>
 
 ModuloEmSerie::ModuloEmSerie() : Modulo(), saida(nullptr)
 {

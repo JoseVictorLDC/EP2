@@ -1,6 +1,9 @@
 #include "ModuloEmParalelo.h"
 #include "Somador.h"
+#include "Sinal.h"
+
 #include <stdexcept>
+#include <list>
 
 ModuloEmParalelo::ModuloEmParalelo() : Modulo(), saida(nullptr)
 {

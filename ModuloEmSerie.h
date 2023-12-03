@@ -2,6 +2,7 @@
 #define MODULOEMSERIE_H
 
 #include "Modulo.h"
+#include "Sinal.h"
 
 class ModuloEmSerie : public Modulo // herança da classe Modulo
 {

@@ -1,6 +1,9 @@
 #include "ModuloRealimentado.h"
 #include "Somador.h"
 #include "Amplificador.h"
+#include "Sinal.h"
+
+#include <list>
 
 ModuloRealimentado ::ModuloRealimentado() : moduloEmSerie(new ModuloEmSerie()), saida(nullptr)
 {

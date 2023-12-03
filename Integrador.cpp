@@ -1,4 +1,5 @@
 #include "Integrador.h"
+#include "Sinal.h"
 
 Integrador::Integrador() : sequencia(nullptr)
 {

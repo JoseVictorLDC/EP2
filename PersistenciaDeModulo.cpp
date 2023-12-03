@@ -7,6 +7,7 @@
 #include "Integrador.h"
 
 #include <fstream>
+#include <list>
 
 void salvarEmArquivoRecurssivo(Modulo *mod, ofstream &arquivo) // funcao auxiliar para salvar em arquivo
 {

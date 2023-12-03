@@ -1,9 +1,8 @@
 #include "Modulo.h"
+#include "CircuitoSISO.h"
 
 #include <iostream>
-using namespace std;
-
-#include <iostream>
+#include <list>
 using namespace std;
 
 Modulo::Modulo() : CircuitoSISO()

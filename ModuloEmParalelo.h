@@ -2,6 +2,7 @@
 #define MODULOEMPARALELO_H
 
 #include "Modulo.h"
+#include "Sinal.h"
 
 class ModuloEmParalelo : public Modulo // herança da classe Modulo
 {
