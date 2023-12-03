@@ -1,8 +1,9 @@
 #ifndef PERSISTENCIADEMODULO_H
 #define PERSISTENCIADEMODULO_H
 
-#include <string>
 #include "Modulo.h"
+
+#include <string>
 using namespace std;
 
 class PersistenciaDeModulo

@@ -4,18 +4,17 @@
 #include "CircuitoSISO.h"
 #include <list>
 
-class Modulo : public CircuitoSISO
+class Modulo : public CircuitoSISO // herança da classe CircuitoSISO
 {
-private:
-    list<CircuitoSISO*>* listaCircuitos;
+protected:
+    list<CircuitoSISO *> *circuitos;
 
 public:
     Modulo();
-    virtual ~Modulo() = 0;
-    void adicionar(CircuitoSISO* circ);
-    list<CircuitoSISO*>* getCircuitos();
+    virtual ~Modulo();
+    virtual void adicionar(CircuitoSISO *circ);
+    virtual list<CircuitoSISO *> *getCircuitos();
     void imprimir();
-
 };
 
 #endif

@@ -1,29 +1,33 @@
-#include "ModuloEmSerie.h"
+#include "ModuloEmParalelo.h"
 #include "Somador.h"
+#include "Sinal.h"
 
-#include <list>
 #include <stdexcept>
-using namespace std;
+#include <list>
 
-ModuloEmSerie::ModuloEmSerie() {
+ModuloEmParalelo::ModuloEmParalelo() : Modulo(), saida(nullptr)
+{
 }
 
-ModuloEmSerie::~ModuloEmSerie() {
+ModuloEmParalelo::~ModuloEmParalelo()
+{
 }
 
-Sinal* ModuloEmSerie::processar(Sinal* sinalIN) {
-    Sinal *saidaAux = sinalIN;
-    Sinal *sinalSomado = sinalIN;
+Sinal *ModuloEmParalelo::processar(Sinal *sinalIN)
+{
+    if (circuitos->empty())
+        throw new logic_error("Não há circuitosSISO para processar o sinal de entrada");
+
     Somador *somador = new Somador();
 
-    if (getCircuitos()->empty()) {
-        throw new logic_error ("Nenhum CircuitoSISO");
+    for (list<CircuitoSISO *>::iterator i = circuitos->begin(); i != circuitos->end(); i++)
+    {
+        if (i == circuitos->begin())
+            saida = (*i)->processar(sinalIN);
+        else
+            saida = somador->processar((*i)->processar(sinalIN), saida);
     }
-    for (list<CircuitoSISO*>::iterator i = (getCircuitos())->begin(); i != (getCircuitos())->end(); i++) {
-        saidaAux = (*i)->processar(saidaAux);
-        sinalSomado = somador->processar(sinalSomado, saidaAux);
-    }
-    return saidaAux;
 
-
+    delete somador;
+    return saida;
 }

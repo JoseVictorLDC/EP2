@@ -1,23 +1,24 @@
 #ifndef MODULOREALIMENTADO_H
 #define MODULOREALIMENTADO_H
 
-#include "Amplificador.h"
-#include "Somador.h"
-#include "Modulo.h"
 #include "ModuloEmSerie.h"
+#include "CircuitoSISO.h"
+#include "Sinal.h"
 
-class ModuloRealimentado : public Modulo
+#include <list>
+
+class ModuloRealimentado : public Modulo // herança da classe Modulo
 {
 private:
-    ModuloEmSerie *moduloSerie;
-    Amplificador *inversor;
-    Somador *somador;
+    ModuloEmSerie *moduloEmSerie;
     Sinal *saida;
 
 public:
     ModuloRealimentado();
-    ~ModuloRealimentado();
-    Sinal *processar(Sinal *sinalIN);
+    virtual ~ModuloRealimentado();
+    Sinal *processar(Sinal *sinalIN);     // redifinição do método processar da superclasse
+    void adicionar(CircuitoSISO *circ);   // redifinição do método adicionar da superclasse
+    list<CircuitoSISO *> *getCircuitos(); // redifinição do método getCircuitos da superclasse
 };
 
 #endif
