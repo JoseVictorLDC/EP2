@@ -1,20 +1,21 @@
 #ifndef MODULOREALIMENTADO_H
 #define MODULOREALIMENTADO_H
 
-#include "Piloto.h"
+#include "Amplificador.h"
 #include "Somador.h"
+#include "Modulo.h"
+#include "ModuloEmSerie.h"
 
-class ModuloRealimentado
+class ModuloRealimentado : public Modulo
 {
 private:
-    double ganho;
-    Piloto *piloto;
+    ModuloEmSerie *moduloSerie;
     Amplificador *inversor;
     Somador *somador;
     Sinal *saida;
 
 public:
-    ModuloRealimentado(double ganho);
+    ModuloRealimentado();
     ~ModuloRealimentado();
     Sinal *processar(Sinal *sinalIN);
 };

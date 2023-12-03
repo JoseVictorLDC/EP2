@@ -2,8 +2,9 @@
 #define INTEGRADOR_H
 
 #include "Sinal.h"
+#include "CircuitoSISO.h"
 
-class Integrador
+class Integrador: public CircuitoSISO
 {
 private:
     double *sequencia;
