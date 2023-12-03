@@ -24,6 +24,7 @@ PersistenciaDeModulo::~PersistenciaDeModulo() {
 void PersistenciaDeModulo::salvarEmArquivo(Modulo* mod) {
     ofstream ostream;
     ostream.open(nomeDoArquivo, ios_base::app);
+    
 
     for(list<CircuitoSISO*>::iterator i = (mod->getCircuitos())->begin(); i != (mod->getCircuitos())->end(); i++) {
         ostream << testeDeClasse(*i) << endl;
@@ -32,6 +33,7 @@ void PersistenciaDeModulo::salvarEmArquivo(Modulo* mod) {
     ostream << "f" << endl;
 
     ostream.close();
+
 }
 
 Modulo* PersistenciaDeModulo::lerDeArquivo() {

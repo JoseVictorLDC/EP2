@@ -24,4 +24,5 @@ void Modulo::imprimir() {
     for (list<CircuitoSISO*>::iterator i = listaCircuitos->begin(); i != listaCircuitos->end(); i++) {
     cout << "Circuito com ID " << getID() << endl;
     }
+    cout << "--" << endl;
 } 
