@@ -123,7 +123,7 @@ void processarOpcao2()
   Modulo *modulo = nullptr;
   CircuitoSISO *circuito = nullptr;
 
-  cout << "Qual estrutura de operações voce deseja ter como base" << '\n'
+  cout << "Qual estrutura de operações voce deseja ter como base?" << '\n'
        << "1) Operacoes em serie nao realimentadas" << '\n'
        << "2) Operacoes em paralelo nao realimentadas" << '\n'
        << "3) Operacoes em serie realimentadas" << '\n'
@@ -154,7 +154,7 @@ void processarOpcao2()
 
 void salvarArquivo(Modulo *modulo)
 {
-  cout << "Voce gostaria de salvar o resultado em um arquivo?" << '\n'
+  cout << "Voce gostaria de salvar o circuito em um novo arquivo?" << '\n'
        << "1) Sim" << '\n'
        << "2) Nao" << '\n'
        << "Escolha: ";
@@ -211,7 +211,7 @@ void aquisicaoDeOperacao(CircuitoSISO *circuito, Modulo *modulo)
     }
 
     cout << "O que voce quer fazer agora?" << '\n'
-         << "1) Realizar mais uma operacao no resultado" << '\n'
+         << "1) Inserir mais uma operacao" << '\n'
          << "2) Imprimir o resultado" << '\n'
          << "Escolha: ";
     // Aqui podemos quebrar o loop
