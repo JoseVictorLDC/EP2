@@ -8,7 +8,6 @@ ModuloEmParalelo::ModuloEmParalelo() : Modulo(), saida(nullptr)
 
 ModuloEmParalelo::~ModuloEmParalelo()
 {
-
 }
 
 Sinal *ModuloEmParalelo::processar(Sinal *sinalIN)
