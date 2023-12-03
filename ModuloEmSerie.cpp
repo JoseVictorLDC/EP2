@@ -1,24 +1,26 @@
 #include "ModuloEmSerie.h"
-#include "Sinal.h"
-    
-#include <list>
+
 #include <stdexcept>
-using namespace std;
 
-ModuloEmSerie::ModuloEmSerie() {
+ModuloEmSerie::ModuloEmSerie() : Modulo(), saida(nullptr)
+{
 }
 
-ModuloEmSerie::~ModuloEmSerie() {
+ModuloEmSerie::~ModuloEmSerie()
+{
 }
 
-Sinal* ModuloEmSerie::processar(Sinal* sinalIN) {
-    Sinal *saidaAux = sinalIN;
+Sinal *ModuloEmSerie::processar(Sinal *sinalIN)
+{
+    if (circuitos->empty())
+        throw new logic_error("Não há circuitosSISO para processar o sinal de entrada");
+    for (list<CircuitoSISO *>::iterator i = circuitos->begin(); i != circuitos->end(); i++)
+    {
+        if (i == circuitos->begin())
+            saida = (*i)->processar(sinalIN);
+        else
+            saida = (*i)->processar(saida);
+    }
 
-    if (getCircuitos()->empty()) {
-        throw new logic_error ("Nenhum CircuitoSISO");
-    }
-    for (list<CircuitoSISO*>::iterator i = (getCircuitos())->begin(); i != (getCircuitos())->end(); i++) {
-        saidaAux = (*i)->processar(saidaAux);
-    }
-    return saidaAux;
+    return saida;
 }
