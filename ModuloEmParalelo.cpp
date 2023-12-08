@@ -20,9 +20,9 @@ Sinal *ModuloEmParalelo::processar(Sinal *sinalIN)
 
     Somador *somador = new Somador();
 
-    for (list<CircuitoSISO *>::iterator i = circuitos->begin(); i != circuitos->end(); i++)
+    for (list<CircuitoSISO *>::iterator i = this->getCircuitos()->begin(); i != this->getCircuitos()->end(); i++)
     {
-        if (i == circuitos->begin())
+        if (i == this->getCircuitos()->begin())
             saida = (*i)->processar(sinalIN);
         else
             saida = somador->processar((*i)->processar(sinalIN), saida);
