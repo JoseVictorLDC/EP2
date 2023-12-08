@@ -6,7 +6,7 @@
 
 class Modulo : public CircuitoSISO // herança da classe CircuitoSISO
 {
-protected:
+private:
     list<CircuitoSISO *> *circuitos;
 
 public:
