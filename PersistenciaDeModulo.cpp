@@ -103,8 +103,6 @@ Modulo *PersistenciaDeModulo::lerDeArquivo()
     if (arquivo.fail()) // se o arquivo nao existe
         throw new invalid_argument("arquivo nao encontrado");
     Modulo *mod = lerDeArquivoRecurssivo(arquivo);
-    if (!arquivo.eof()) // se o arquivo nao termina com "f"
-        throw new logic_error("formatacao incorreta do arquivo");
     arquivo.close();
     return mod;
 }
