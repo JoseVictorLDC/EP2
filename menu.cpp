@@ -1,11 +1,18 @@
-#include "PersistenciaDeModulo.h"
-#include "ModuloEmSerie.h"
-#include "ModuloEmParalelo.h"
-#include "ModuloRealimentado.h"
 #include "Amplificador.h"
+#include "Circuito.h"
+#include "CircuitoMISO.h"
+#include "CircuitoSISO.h"
 #include "Derivador.h"
 #include "Integrador.h"
+#include "Modulo.h"
+#include "ModuloEmParalelo.h"
+#include "ModuloEmSerie.h"
+#include "ModuloRealimentado.h"
+#include "PersistenciaDeModulo.h"
+#include "Sinal.h"
+#include "Somador.h"
 
+#include <string>
 #include <fstream>
 #include <stdexcept>
 #include <cmath>
